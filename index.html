@@ -129,13 +129,13 @@ function animate() {
   });
 
   // Text perfectly centered inside the heart
-  const pulse = 50 + 12*Math.abs(Math.sin(frame*0.15));
+  const pulse = 50 + 12*Math.abs(Math.sin(frame*0.07));
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
   // "Hannah" — top line
   ctx.fillStyle = '#ffaaaa';
-  ctx.font = `${pulse+35}px 'Kristen ITC', bold`;
+  ctx.font = `${pulse+35}px 'Kristen ITC', cursive`;
   ctx.fillText("Hannah", w/2 + 4, h/2 - 15);
 
   ctx.fillStyle = '#ffcccc';
