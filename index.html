@@ -122,8 +122,8 @@ function animate() {
     const dy = p.baseY - (h/2-40);
     const dist = Math.sqrt(dx*dx + dy*dy) || 1;
     const force = 18 / (dist*0.8);
-    p.x = p.baseX + dx*force*Math.sin(frame*0.08)*beat;
-    p.y = p.baseY + dy*force*Math.sin(frame*0.08)*beat;
+    p.x = p.baseX + dx*force*Math.sin(frame*0.07)*beat;
+    p.y = p.baseY + dy*force*Math.sin(frame*0.07)*beat;
     ctx.fillStyle = '#ff2121';
     ctx.fillRect(p.x-2, p.y-2, 4, 4);
   });
@@ -135,24 +135,24 @@ function animate() {
 
   // "Hannah" — top line
   ctx.fillStyle = '#ffaaaa';
-  ctx.font = `${pulse+35}px 'Kristen ITC', cursive`;
+  ctx.font = `${pulse+35}px 'Kristen ITC', bold`;
   ctx.fillText("Hannah", w/2 + 4, h/2 - 15);
 
   ctx.fillStyle = '#ffcccc';
-  ctx.font = `${pulse+25}px 'Kristen ITC', cursive`;
+  ctx.font = `${pulse+25}px 'Kristen ITC', bold`;
   ctx.fillText("Hannah", w/2 + 2, h/2 - 15);
 
   ctx.fillStyle = '#ffffff';
-  ctx.font = `bold ${pulse+22}px 'Kristen ITC', cursive`;
+  ctx.font = `bold ${pulse+22}px 'Kristen ITC', bold`;
   ctx.fillText("Hannah", w/2, h/2 - 15);
 
   // "Welcome back" — bottom line
   ctx.fillStyle = '#ffbbbb';
-  ctx.font = `${pulse+8}px 'Kristen ITC', bold`;
+  ctx.font = `${pulse+8}px 'Kristen ITC', cursive`;
   ctx.fillText("Welcome back", w/2 + 3, h/2 + 35);
 
   ctx.fillStyle = '#ffffff';
-  ctx.font = `bold ${pulse+5}px 'Kristen ITC', bold`;
+  ctx.font = `bold ${pulse+5}px 'Kristen ITC', cursive`;
   ctx.fillText("Welcome back", w/2, h/2 + 35);
 
   frame++;
