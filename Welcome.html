@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hannah ♡</title>
+<style>
+  body { margin:0; overflow:hidden; background:#0A0A1A; }
+  canvas { display:block; }
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let w = canvas.width = window.innerWidth;
+let h = canvas.height = window.innerHeight;
+
+window.addEventListener('resize', () => {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+});
+
+let frame = 0;
+const particles = [];
+const shootingStars = [];
+
+// Heart particles
+function heartPoint(t) {
+  const x = 16 * Math.pow(Math.sin(t), 3);
+  const y = -(13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t));
+  return { x: x*11 + w/2, y: y*11 + h/2 - 40 };
+}
+for (let i = 0; i < 3200; i++) {
+  const t = Math.random() * Math.PI * 2;
+  const p = heartPoint(t);
+  particles.push({ baseX: p.x, baseY: p.y, x: p.x, y: p.y });
+}
+
+// Slow dreamy shooting stars
+class ShootingStar {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = -100;
+    this.y = Math.random() * (h * 0.4);
+    this.speed = Math.random() * 3 + 4;
+    this.size = Math.random() * 3 + 2;
+    const angle = Math.random() * 0.5 + 0.3;
+    this.vx = Math.cos(angle) * this.speed;
+    this.vy = Math.sin(angle) * this.speed;
+    this.opacity = 1;
+    this.trail = [];
+  }
+  update() {
+    this.trail.push({x: this.x, y: this.y});
+    if(this.trail.length > 20) this.trail.shift();
+    this.x += this.vx;
+    this.y += this.vy;
+    this.opacity -= 0.008;
+    if(this.x > w + 100 || this.opacity <= 0) {
+      setTimeout(() => this.reset(), Math.random()*4000 + 3000);
+    }
+  }
+  draw() {
+    const grad = ctx.createLinearGradient(this.x - this.vx*12, this.y - this.vy*12, this.x, this.y);
+    grad.addColorStop(0, `rgba(255,255,255,${this.opacity})`);
+    grad.addColorStop(0.7, `rgba(255,255,220,${this.opacity*0.6})`);
+    grad.addColorStop(1, `rgba(255,220,180,0)`);
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = this.size;
+    ctx.beginPath();
+    ctx.moveTo(this.x - this.vx*10, this.y - this.vy*10);
+    ctx.lineTo(this.x, this.y);
+    ctx.stroke();
+    ctx.fillStyle = `rgba(255,255,255,${this.opacity})`;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size*1.8, 0, Math.PI*2);
+    ctx.fill();
+  }
+}
+for(let i=0;i<4;i++) {
+  const s = new ShootingStar();
+  s.x = -200 - i*250;
+  shootingStars.push(s);
+}
+
+// Soft background stars
+const bgStars = [];
+for(let i=0; i<80; i++) {
+  bgStars.push({
+    x: Math.random()*w,
+    y: Math.random()*h,
+    size: Math.random()*1.5 + 0.5,
+    twinkle: Math.random()*100
+  });
+}
+
+function animate() {
+  ctx.fillStyle = 'rgba(10,10,26,0.12)';
+  ctx.fillRect(0,0,w,h);
+
+  // Background twinkles
+  bgStars.forEach(s => {
+    s.twinkle += 0.05;
+    const op = 0.3 + 0.7*Math.sin(s.twinkle);
+    ctx.fillStyle = `rgba(255,255,255,${op})`;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
+    ctx.fill();
+  });
+
+  // Shooting stars
+  shootingStars.forEach(s => { s.update(); s.draw(); });
+
+  // Beating heart
+  const beat = 1 + 0.12*Math.sin(frame*0.12);
+  particles.forEach(p => {
+    const dx = p.baseX - w/2;
+    const dy = p.baseY - (h/2-40);
+    const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+    const force = 18 / (dist*0.8);
+    p.x = p.baseX + dx*force*Math.sin(frame*0.08)*beat;
+    p.y = p.baseY + dy*force*Math.sin(frame*0.08)*beat;
+    ctx.fillStyle = '#ff2121';
+    ctx.fillRect(p.x-2, p.y-2, 4, 4);
+  });
+
+  // Text perfectly centered inside the heart
+  const pulse = 50 + 12*Math.abs(Math.sin(frame*0.15));
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  // "Hannah" — top line
+  ctx.fillStyle = '#ffaaaa';
+  ctx.font = `${pulse+35}px 'Kristen ITC', cursive`;
+  ctx.fillText("Hannah", w/2 + 4, h/2 - 15);
+
+  ctx.fillStyle = '#ffcccc';
+  ctx.font = `${pulse+25}px 'Kristen ITC', cursive`;
+  ctx.fillText("Hannah", w/2 + 2, h/2 - 15);
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = `bold ${pulse+22}px 'Kristen ITC', cursive`;
+  ctx.fillText("Hannah", w/2, h/2 - 15);
+
+  // "Welcome back" — bottom line
+  ctx.fillStyle = '#ffbbbb';
+  ctx.font = `${pulse+8}px 'Kristen ITC', cursive`;
+  ctx.fillText("Welcome back", w/2 + 3, h/2 + 35);
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = `bold ${pulse+5}px 'Kristen ITC', cursive`;
+  ctx.fillText("Welcome back", w/2, h/2 + 35);
+
+  frame++;
+  requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+</body>
+</html>
